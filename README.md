@@ -1,2 +1,2 @@
 # rnnlm_numpy
-Recurrent Neural Network Language Modeling with Numpy
+An implementation of a Recurrent Neural Network for Language Modeling, using Python and Numpy extension.
