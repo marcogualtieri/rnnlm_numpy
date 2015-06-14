@@ -110,20 +110,20 @@ class RecurrentNeuralNetwork:
         if(current_word==-1):
             return
         # calculate error terms for output
-        output_error = -1.0 * self.neu_output
-        output_error[current_word] += 1.0
+        output_error = self.neu_output
+        output_error[current_word] -= 1.0
         output_deltas = output_error
         # calculate error terms for hidden
         hidden_error = np.dot(self.syn_hidden, output_deltas)
         hidden_deltas = np.multiply(activation_hidden_d(np.copy(self.neu_hidden)), hidden_error)
         # update hidden-->output weights
         change_hidden = np.outer(self.neu_hidden, output_deltas)
-        self.syn_hidden += np.multiply(change_hidden, self.learning_rate) 
+        self.syn_hidden -= np.multiply(change_hidden, self.learning_rate) 
         # update input-->hidden weights
         if(previous_word!=-1):
-            self.syn_input[previous_word,:] += np.multiply(hidden_deltas, self.learning_rate)
+            self.syn_input[previous_word,:] -= np.multiply(hidden_deltas, self.learning_rate)
         change_input_not_sparse = np.outer(self.neu_context, hidden_deltas)
-        self.syn_input[self.vocabulary_size:self.vocabulary_size+self.hidden_layer_size,:] += np.multiply(change_input_not_sparse, self.learning_rate)
+        self.syn_input[self.vocabulary_size:self.vocabulary_size+self.hidden_layer_size,:] -= np.multiply(change_input_not_sparse, self.learning_rate)
 
     def train(self):
         for e in xrange(self.starting_epoch, self.max_epochs):
