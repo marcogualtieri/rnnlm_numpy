@@ -58,6 +58,7 @@ class RecurrentNeuralNetwork:
         self.min_improvement = options['min_validation_logp_improvement']
         self.logp_previous = options['logp_previous']
         self.learning_rate_divide = options['learning_rate_divide']
+        self.reset_context_each_sentence = options['reset_context_each_sentence']
         # init neurons
         self.hidden_layer_size = options['hidden_layer_size']
         self.neu_input_index = -1
@@ -137,6 +138,9 @@ class RecurrentNeuralNetwork:
                 self.__backpropagate(previous_word, current_word) 
                 self.neu_context = np.copy(self.neu_hidden)
                 previous_word = current_word
+                # reset context at the end of each sentence
+                if(self.reset_context_each_sentence and current_word==0):
+                    self.__reset_context()
             # validation phase
             self.__reset_context()
             self.validation_set.seek(0)
@@ -152,6 +156,9 @@ class RecurrentNeuralNetwork:
                     logp += np.log10(self.neu_output[current_word])
                 self.neu_context = np.copy(self.neu_hidden)
                 previous_word = current_word
+                # reset context at the end of each sentence
+                if(self.reset_context_each_sentence and current_word==0):
+                    self.__reset_context()
             # print progress
             print("*******************")
             print("{}".format(time.strftime("%Y-%m-%d %H:%M:%S")))
@@ -197,6 +204,9 @@ class RecurrentNeuralNetwork:
                     error_counter += 1
             self.neu_context = np.copy(self.neu_hidden)
             previous_word = current_word
+            # reset context at the end of each sentence
+            if(self.reset_context_each_sentence and current_word==0):
+                self.__reset_context()
         print("Test log probability {}".format(logp))
         print("Test words counter {}".format(word_counter))
         if(word_counter>0):

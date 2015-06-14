@@ -30,12 +30,13 @@ def init_configuration(config_file):
 	    'weight_max_value': float(config.get('TrainingParameters','WeightsMax')),
 	    'max_epochs': int(config.get('TrainingParameters','MaxEpochs')),
 	    'min_validation_logp_improvement': float(config.get('TrainingParameters','MinValidationLogpImprovement')),
+	    'reset_context_each_sentence': config.getboolean('TrainingParameters','ResetContextEachSentence'),
 	    'recovery_config_file': config_file_name,
 	    'recovery_path': recovery_path,
 	    'starting_epoch': int(config.get('Recovery','StartingEpoch')) if config.has_option('Recovery','StartingEpoch') else 0,
 	    'learning_rate': float(config.get('Recovery','LearningRate')) if(config.has_option('Recovery','LearningRate')) else float(config.get('TrainingParameters','LearningRate')),
 	    'logp_previous': float(config.get('Recovery','LogpPrevious')) if config.has_option('Recovery','LogpPrevious') else float("-inf"),
-	    'learning_rate_divide': config.getboolean('Recovery', 'LearningRateDivide') if config.has_option('Recovery','LearningRateDivide') else False
+	    'learning_rate_divide': config.getboolean('Recovery','LearningRateDivide') if config.has_option('Recovery','LearningRateDivide') else False
 	}
 	return options
 
