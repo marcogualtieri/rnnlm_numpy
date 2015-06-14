@@ -15,7 +15,6 @@ def __words_from_file(filename):
 				raw_text += line + " </s> "
 	# clean punctuation (leave apostrophe in case like it's, don't...)
 	text = " ".join(re.findall("[a-zA-Z]+'[a-zA-Z]+|[a-zA-Z]+|<\/s>", raw_text))
-	#text = re.sub("(?<![a-zA-Z])'|'(?![a-zA-Z])", " ", text)
 	# lower case 
 	text = text.lower()
 	# tokenization (including trim/strip)

@@ -129,7 +129,6 @@ class RecurrentNeuralNetwork:
         for e in xrange(self.starting_epoch, self.max_epochs):
             # training phase
             self.__reset_context()
-            #self.__init_previous_changes_for_momentum()
             self.training_set.seek(0)
             previous_word = 0
             for current_word in  self.training_set:

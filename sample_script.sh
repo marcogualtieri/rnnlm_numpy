@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python rnnlm.py data/small_sample/train data/small_sample/valid data/small_sample/test 
+python rnnlm.py data/small_sample/training data/small_sample/validation data/small_sample/test 
