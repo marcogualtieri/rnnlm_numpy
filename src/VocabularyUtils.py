@@ -57,4 +57,4 @@ def generate_dataset(training_set_filename, validation_set_filename, test_set_fi
 	test_set_1hot_filename = osp.join(dataset_path, 'test1hot')
 	__save_set_in_1hot(vocabulary_keys, __words_from_file(test_set_filename), test_set_1hot_filename)
 
-	return [vocabulary_filename, training_set_1hot_filename, validation_set_1hot_filename, test_set_1hot_filename]
+	return [vocabulary_filename, len(training_words), training_set_1hot_filename, validation_set_1hot_filename, test_set_1hot_filename]

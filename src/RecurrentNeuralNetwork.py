@@ -35,7 +35,7 @@ def sparse_dot(one_hot_index, l, not_sparse_array_section, m, matrix):
 
 class RecurrentNeuralNetwork:
 
-    def __init__(self, vocabulary_filename, training_set_filename, validation_set_filename, test_set_filename, config_file):
+    def __init__(self, vocabulary_filename, training_set_size, training_set_filename, validation_set_filename, test_set_filename, config_file):
         # load configuration file
         options = cu.init_configuration(config_file)
         self.recovery_config_file = options['recovery_config_file']
@@ -51,6 +51,23 @@ class RecurrentNeuralNetwork:
         ss_occurrences = vocabulary.pop("</s>")
         vocabulary = OrderedDict({"</s>": ss_occurrences}.items() + OrderedDict(sorted(vocabulary.items(), key=lambda x: (-x[1], x[0]))).items())
         self.vocabulary_size = len(vocabulary)
+        # smoothing factor 
+        self.occurrences_smoothing = options['occurrences_smoothing']
+        if(self.occurrences_smoothing):
+            occurrences = vocabulary.values()
+            log_training_set_size = np.log(training_set_size)
+            self.smoothing_factors = []
+            for i in xrange(self.vocabulary_size): 
+                self.smoothing_factors.insert(i, log_training_set_size - np.log(occurrences[i]))
+            # normalize between 0.2 and 1.2
+            old_min = min(self.smoothing_factors)
+            old_max = max(self.smoothing_factors)
+            new_min = 1.0
+            new_max = 2.0
+            norm_range = (new_max-new_min)/(old_max-old_min) 
+            for i in xrange(self.vocabulary_size):
+                factor = new_min + (self.smoothing_factors[i] - old_min) * norm_range
+                self.smoothing_factors[i] = factor
         # net parameters
         self.learning_rate = options['learning_rate']
         self.starting_epoch = options['starting_epoch']
@@ -109,6 +126,10 @@ class RecurrentNeuralNetwork:
     def __backpropagate(self, previous_word, current_word):
         if(current_word==-1):
             return
+        if(self.occurrences_smoothing):
+            learning_rate = self.learning_rate * self.smoothing_factors[current_word]
+        else:
+            learning_rate = self.learning_rate
         # calculate error terms for output
         output_error = self.neu_output
         output_error[current_word] -= 1.0
@@ -118,12 +139,12 @@ class RecurrentNeuralNetwork:
         hidden_deltas = np.multiply(activation_hidden_d(np.copy(self.neu_hidden)), hidden_error)
         # update hidden-->output weights
         change_hidden = np.outer(self.neu_hidden, output_deltas)
-        self.syn_hidden -= np.multiply(change_hidden, self.learning_rate) 
+        self.syn_hidden -= np.multiply(change_hidden, learning_rate) 
         # update input-->hidden weights
         if(previous_word!=-1):
-            self.syn_input[previous_word,:] -= np.multiply(hidden_deltas, self.learning_rate)
+            self.syn_input[previous_word,:] -= np.multiply(hidden_deltas, learning_rate)
         change_input_not_sparse = np.outer(self.neu_context, hidden_deltas)
-        self.syn_input[self.vocabulary_size:self.vocabulary_size+self.hidden_layer_size,:] -= np.multiply(change_input_not_sparse, self.learning_rate)
+        self.syn_input[self.vocabulary_size:self.vocabulary_size+self.hidden_layer_size,:] -= np.multiply(change_input_not_sparse, learning_rate)
 
     def train(self):
         for e in xrange(self.starting_epoch, self.max_epochs):

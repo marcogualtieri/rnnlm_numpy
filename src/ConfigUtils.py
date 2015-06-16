@@ -31,6 +31,7 @@ def init_configuration(config_file):
 	    'max_epochs': int(config.get('TrainingParameters','MaxEpochs')),
 	    'min_validation_logp_improvement': float(config.get('TrainingParameters','MinValidationLogpImprovement')),
 	    'reset_context_each_sentence': config.getboolean('TrainingParameters','ResetContextEachSentence'),
+	    'occurrences_smoothing': config.getboolean('TrainingParameters','OccurrencesSmoothing'),
 	    'recovery_config_file': config_file_name,
 	    'recovery_path': recovery_path,
 	    'starting_epoch': int(config.get('Recovery','StartingEpoch')) if config.has_option('Recovery','StartingEpoch') else 0,

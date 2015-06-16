@@ -19,9 +19,9 @@ if __name__ == '__main__':
 	config_file = sys.argv[4] if len(sys.argv)>4 else 'configs/default.ini'
 	print("Using configuration file: {}".format(config_file))
 
-	filenames = v.generate_dataset(training, validation, test)
+	dataset = v.generate_dataset(training, validation, test)
 
-	net = RNN.RecurrentNeuralNetwork(filenames[0], filenames[1], filenames[2], filenames[3], config_file)
+	net = RNN.RecurrentNeuralNetwork(dataset[0], dataset[1], dataset[2], dataset[3], dataset[4], config_file)
 
 	net.train()
 	net.test()
