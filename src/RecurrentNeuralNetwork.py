@@ -173,7 +173,7 @@ class RecurrentNeuralNetwork:
                 # word==-1 are not in vocabulary
                 if(current_word!=-1):
                     word_counter += 1
-                    logp += np.log10(self.neu_output[current_word])
+                    logp += np.log2(self.neu_output[current_word])
                 self.neu_context = np.copy(self.neu_hidden)
                 previous_word = current_word
                 # reset context at the end of each sentence
@@ -187,7 +187,7 @@ class RecurrentNeuralNetwork:
             print("Validation log probability {}".format(logp))
             print("Validation words counter {}".format(word_counter))
             if(word_counter>0):
-                print("Validation PPL {}".format(np.power(10.0, -logp / word_counter)))
+                print("Validation PPL {}".format(np.power(2.0, -logp / word_counter)))
             # check improvement
             if(logp < self.logp_previous):
                 self.__restore_weights()
@@ -219,7 +219,7 @@ class RecurrentNeuralNetwork:
             self.__feedforward(previous_word)
             if(current_word!=-1):
                 word_counter += 1
-                logp += np.log10(self.neu_output[current_word])
+                logp += np.log2(self.neu_output[current_word])
                 if(current_word!=0 and current_word != self.__get_predicted_words()):
                     error_counter += 1
             self.neu_context = np.copy(self.neu_hidden)
@@ -230,5 +230,5 @@ class RecurrentNeuralNetwork:
         print("Test log probability {}".format(logp))
         print("Test words counter {}".format(word_counter))
         if(word_counter>0):
-            print("Test PPL {}".format(np.power(10.0, -logp / word_counter)))
+            print("Test PPL {}".format(np.power(2.0, -logp / word_counter)))
             print("Test WER {}".format(float(error_counter) / word_counter))
