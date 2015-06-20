@@ -107,11 +107,6 @@ class RecurrentNeuralNetwork:
         np.save(os.path.join(self.recovery_path, "input_hidden"), self.syn_input)
         np.save(os.path.join(self.recovery_path, "hidden_output"), self.syn_hidden)
 
-    def __init_previous_changes_for_momentum(self):
-        self.hidden_deltas_previous = np.zeros(self.hidden_layer_size)
-        self.change_input_not_sparse_previous = np.zeros([self.hidden_layer_size, self.hidden_layer_size])
-        self.change_hidden_previous = np.zeros([self.hidden_layer_size, self.vocabulary_size])
-
     # reset context layer
     def __reset_context(self):
         self.neu_hidden = np.zeros(self.hidden_layer_size)
